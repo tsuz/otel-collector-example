@@ -1,0 +1,42 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'your-api-metrics'
+          scrape_interval: 60s
+          metrics_path: '/actuator/prometheus'
+          scheme: 'http'
+          static_configs:
+            - targets: ['host.docker.internal:8081']
+
+processors:
+  batch:
+
+exporters:
+  logging:
+    loglevel: debug
+  prometheus:
+    endpoint: "localhost:8889"
+
+extensions:
+  health_check:
+
+service:
+  extensions: [health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]
+    metrics:
+      receivers: [otlp, prometheus]
+      processors: [batch]
+      exporters: [logging, prometheus]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]
