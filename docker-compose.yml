@@ -1,9 +1,15 @@
 version: '3'
 services:
   otel-collector:
+#    expose:
+#      - "4317"
+#      - "4318"
+#      - "8888"
+#      - "8889"
+#      - "13133"
     image: otel/opentelemetry-collector:latest
     command: ["--config=/etc/otel-collector-config.yaml"]
-    network_mode: "host"
+#    network_mode: "host"
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
     ports:

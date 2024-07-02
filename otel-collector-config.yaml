@@ -18,9 +18,15 @@ processors:
 
 exporters:
   logging:
-    loglevel: debug
+    verbosity: detailed
+  debug:
+    verbosity: detailed
   prometheus:
     endpoint: "localhost:8889"
+  otlphttp:
+    endpoint: "http://host.docker.internal:8080"
+    tls:
+      insecure: true
 
 extensions:
   health_check:
@@ -31,12 +37,12 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [logging]
+      exporters: [logging, otlphttp]
     metrics:
       receivers: [otlp, prometheus]
       processors: [batch]
-      exporters: [logging, prometheus]
+      exporters: [logging, otlphttp, prometheus]
     logs:
       receivers: [otlp]
       processors: [batch]
-      exporters: [logging]
+      exporters: [logging, otlphttp]
